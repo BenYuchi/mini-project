@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 def perform_sentiment_analysis(data):
     print("\nPerforming sentiment analysis...")
-
+    
     if 'Sentiment' in data.columns:
         sentiment_counts = data['Sentiment'].value_counts()
         print("\nSentiment analysis results:")
