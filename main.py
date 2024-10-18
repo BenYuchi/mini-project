@@ -13,13 +13,16 @@ def convert_duration_to_minutes(duration_str):
 
 def preprocess_data(data):
     if 'Actors' in data.columns:
+        # Count the number of actors separated by '|' and assign to `NumActors`
         data['NumActors'] = data['Actors'].apply(lambda x: len(str(x).split('|')) if pd.notna(x) else 0)
+
     data['DurationMinutes'] = data['Duration'].apply(convert_duration_to_minutes)
+
     data = anova_analysis.assign_yearcategory(data)
-    
-    print("\nConverted Duration column (DurationMinutes):")
+
+    print("\nConverted 'Duration' column (DurationMinutes):")
     print(data[['Duration', 'DurationMinutes']].head())
-    print("\nYearCategory column after preprocessing (first 5 rows):")
+    print("\n'YearCategory' column after preprocessing (first 5 rows):")
     print(data[['ReleaseYear', 'YearCategory']].head())
     
     return data
@@ -28,7 +31,7 @@ def load_data():
     file_path = input("Please enter the dataset path (CSV format): ")
     data = pd.read_csv(file_path)
     print("Dataset loaded successfully!")
-    print("\nBasic information about the dataset:")
+    print("\nBasic information of the dataset:")
     print(data.info())
     print("\nDescriptive statistics of the dataset:")
     print(data.describe())
@@ -36,7 +39,7 @@ def load_data():
     data = preprocess_data(data)
    
     print("\nPreview of the processed dataset:")
-    print(data[['Actors', 'NumActors']].head())  
+    print(data[['Actors', 'NumActors']].head())  # Print the new 'NumActors' column
     return data
 
 def main():
@@ -48,15 +51,15 @@ def main():
         print("1. ANOVA Analysis (YearCategory vs ReleaseYear)")
         print("2. ANOVA Analysis (Director vs Duration)")
         print("3. ANOVA Analysis (Writer vs Duration)")
-        print("4. ANOVA Analysis (Number of Actors vs Duration)")
+        print("4. ANOVA Analysis (NumActors vs Duration)")
         print("5. Regression Analysis (ReleaseYear vs Duration)")
-        print("6. Regression Analysis (Number of Actors vs Duration)")
+        print("6. Regression Analysis (NumActors vs Duration)")
         print("7. Regression Analysis (Duration vs Sentiment)")
         print("8. Sentiment Analysis")
         print("9. ANOVA Analysis (Director vs Sentiment vs Duration)")
         print("10. ANOVA Analysis (Year vs Sentiment)")
         print("11. ANOVA Analysis (Writer vs Duration)")
-        print("12. Exit")
+        print("12. Exit Program")
 
         choice = input("Please enter your choice (1-12): ")
 
@@ -66,8 +69,8 @@ def main():
             anova_analysis.perform_anova(data, 'Director', 'DurationMinutes', 'Director vs Duration')
         elif choice == '3':
             anova_analysis.perform_anova(data, 'Writer', 'DurationMinutes', 'Writer vs Duration')
-        elif choice == '4':
-            anova_analysis.perform_anova(data, 'Actors', 'DurationMinutes', 'Number of Actors vs Duration')
+        elif choice == '4':  
+            anova_analysis.numactors_vs_duration_analysis(data) 
         elif choice == '5':
             regression_analysis.perform_regression(data, 'ReleaseYear', 'DurationMinutes')
         elif choice == '6':
@@ -79,14 +82,15 @@ def main():
         elif choice == '9':
             anova_analysis.director_sentiment_vs_duration(data)
         elif choice == '10':
-            anova_analysis.year_vs_sentiment_analysis(data)
+            anova_analysis.year_vs_sentiment_analysis(data)  
         elif choice == '11':
             anova_analysis.writer_vs_duration_analysis(data)
         elif choice == '12':
-            print("Exiting the program.")
+            print("Exiting program.")
             break
         else:
             print("Invalid choice, please try again.")
+
 
 if __name__ == "__main__":
     main()
