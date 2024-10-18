@@ -5,7 +5,7 @@ def inspect_and_clean_data(file_path):
     try:
         data = pd.read_csv(file_path)
         print("Dataset loaded successfully!\n")
-        print("Basic information about the dataset:")
+        print("Basic information of the dataset:")
         print(data.info())
         print("\nDescriptive statistics of the dataset:")
         print(data.describe())
@@ -18,27 +18,19 @@ def inspect_and_clean_data(file_path):
         
         return data
     except Exception as e:
-        print(f"Failed to load the dataset: {e}")
+        print(f"Failed to load dataset: {e}")
         return None
 
 def clean_data(data):
-    """ Clean the data: handle invalid characters, missing values, and duplicates """
-
     data = data.applymap(lambda x: x.strip() if isinstance(x, str) else x)
-    
     data['MovieName'] = data['MovieName'].apply(lambda x: re.sub(r'[^\x00-\x7F]+', '', x) if isinstance(x, str) else x)
-    
     data.dropna(subset=['MovieName', 'ReleaseYear'], inplace=True)
-    
     data.drop_duplicates(inplace=True)
-    
     data['ReleaseYear'] = pd.to_numeric(data['ReleaseYear'], errors='coerce')
     data.dropna(subset=['ReleaseYear'], inplace=True)
-    
     return data
 
 def convert_duration_to_minutes(duration_str):
-    """Convert duration to minutes"""
     try:
         duration_str = duration_str.lower().replace(' ', '')
         if 'h' in duration_str:
